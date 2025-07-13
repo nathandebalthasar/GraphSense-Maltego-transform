@@ -16,14 +16,14 @@ from .utils import set_maltego_transformation_error
 
 
 @registry.register_transform(
-    display_name="To Neighbors",
+    display_name="To Input Addresses",
     input_entity="maltego.Cryptocurrency",
-    description="Returns neighbors of a cryptocurerncy address.",
+    description="Returns input addresses of a cryptocurerncy address.",
     output_entities=["maltego.Cryptocurrency"],
 )
-class ToNeighbors(DiscoverableTransform):
+class ToInputAddresses(DiscoverableTransform):
     """
-    Lookup for all neighbors associated with a Virtual Asset (balance, total in and out, date last and first Tx...)
+    Lookup for all input addresses associated with a Virtual Asset (balance, total in and out, date last and first Tx...)
     """
 
     @classmethod
@@ -31,7 +31,7 @@ class ToNeighbors(DiscoverableTransform):
         cls, request: MaltegoMsg, responseMaltego: MaltegoTransform = None
     ):
 
-        query_type = "neighbors"
+        query_type = "input_addresses"
 
         entity_details = request.Properties
         if (
@@ -112,4 +112,4 @@ class ToNeighbors(DiscoverableTransform):
 
 
 if __name__ == "__main__":
-    ToNeighbors.create_entities(sys.argv[1])
+    ToInputAddresses.create_entities(sys.argv[1])

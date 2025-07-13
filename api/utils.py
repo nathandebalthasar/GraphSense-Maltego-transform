@@ -593,14 +593,14 @@ def create_entity_with_details(
             entity = ""
             error = "No attribution tags found for this cluster in " + currency
 
-    if query_type == "neighbors":
+    if query_type == "input_addresses":
         neighbor = json_result[0]["address"]
         address = neighbor["address"]
         amount_received = json_result[0]["value"]["value"] / set_factor
         entity = response.addEntity("maltego.BTCAddress", address)
 
         entity.addProperty('link#maltego.link.direction','link#maltego.link.direction','loose','output-to-input')
-        entity.setLinkLabel(f"{amount_received} {currency}")
+        entity.setLinkLabel(f"{amount_received} {currency.upper()}")
 
     entity = ""
 
