@@ -7,8 +7,6 @@ from extensions import registry
 from api.utils import (
     create_entity_with_details,
     get_currency_from_entity_details,
-    get_address_details,
-    get_entity_details,
     get_address_neighbors,
 )
 
@@ -30,7 +28,6 @@ class ToInputAddresses(DiscoverableTransform):
     def create_entities(
         cls, request: MaltegoMsg, responseMaltego: MaltegoTransform = None
     ):
-
         query_type = "input_addresses"
 
         entity_details = request.Properties
@@ -61,18 +58,9 @@ class ToInputAddresses(DiscoverableTransform):
             address = entity_details["properties.cryptocurrencyaddress"]
 
         for currency in currencies:
-
             (neighbors, error) = get_address_neighbors(
-                currency, address,
+                currency, address, "in"
             )
-
-            # print(neighbors)
-
-            # addr_or_entity, tags, error = (
-            #     get_entity_details(currency, address)
-            #     if "cryptocurrency.wallet.name" in entity_details
-            #     else get_address_details(currency, address)
-            # )
 
             if error:
                 set_maltego_transformation_error(
@@ -94,20 +82,6 @@ class ToInputAddresses(DiscoverableTransform):
                             str(address),
                             error,
                         )
-                # addr_or_entity, error = create_entity_with_details(
-                #     (addr_or_entity, tags, error),
-                #     currency,
-                #     query_type,
-                #     responseMaltego,
-                # )
-                # if error:
-                #     set_maltego_transformation_error(
-                #         responseMaltego,
-                #         currency,
-                #         query_type,
-                #         str(address),
-                #         error,
-                #     )
         return
 
 

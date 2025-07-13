@@ -7,12 +7,12 @@ import json
 
 import re as regex
 
+from typing import Literal
+
 from graphsense.api import addresses_api, entities_api
 from graphsense.api_client import ApiClient, ApiException
 
 from datetime import datetime
-
-from pprint import pprint
 
 
 def open_config():
@@ -110,19 +110,20 @@ def get_address_details(currency, address):
         return address_obj, tags, error
 
 
-def get_address_neighbors(currency, address):
+def get_address_neighbors(currency, address, direction: Literal["in", "out"]):
     error = ""
     configuration = open_config()[0]
 
     with ApiClient(configuration) as api_client:
         api_instance = addresses_api.AddressesApi(api_client)
-        direction = "in"
         neighbors = []
 
         try:
-            neighbors = api_instance.list_address_neighbors(currency, str(address), direction)['neighbors']
+            neighbors = api_instance.list_address_neighbors(currency, str(address), direction)["neighbors"]
+
         except Exception as e:
-            error = "Exception when calling List_addresse_neighbors: " + str(e)
+            error = "Exception when calling List_address_neighbors: " + str(e)
+
         return neighbors, error
 
 
@@ -597,8 +598,9 @@ def create_entity_with_details(
         neighbor = json_result[0]["address"]
         address = neighbor["address"]
         amount_received = json_result[0]["value"]["value"] / set_factor
-        entity = response.addEntity("maltego.BTCAddress", address)
+        entity = response.addEntity(set_type, address)
 
+        # Override direction to indicate an input address
         entity.addProperty('link#maltego.link.direction','link#maltego.link.direction','loose','output-to-input')
         entity.setLinkLabel(f"{amount_received} {currency.upper()}")
 
